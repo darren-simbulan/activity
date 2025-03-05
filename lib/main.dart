@@ -1,225 +1,156 @@
-
 import 'package:flutter/cupertino.dart';
 
 void main() {
-runApp(
-CupertinoApp(
-debugShowCheckedModeBanner: false,
-home: MyApp(),
-),
-);
+  runApp(
+    CupertinoApp(
+      debugShowCheckedModeBanner: false,
+      home: MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatefulWidget {
-const MyApp({super.key});
+class MyApp extends StatelessWidget {
+  final List<Map<String, dynamic>> profiles = [
+    {
+      'image': 'images/1.jpg',
+      'name': 'Angilyn Borja',
+      'email': 'angilyn.borja@email.com',
+      'phone': '+63 912 345 6789',
+      'education': 'BS Computer Science, University of Manila',
+      'skills': ['Flutter', 'Dart', 'UI/UX Design'],
+      'experience': '2 years as a Mobile Developer'
+    },
+    {
+      'image': 'images/2.jpg',
+      'name': 'Darren Simbulan',
+      'email': 'darren.simbulan@email.com',
+      'phone': '+63 923 456 7890',
+      'education': 'BS Information Technology, Ateneo',
+      'skills': ['Backend Development', 'Node.js', 'SQL'],
+      'experience': '3 years as a Software Engineer'
+    },
+    {
+      'image': 'images/3.jpg',
+      'name': 'Aldrin Migano',
+      'email': 'aldrin.migano@email.com',
+      'phone': '+63 911 223 3344',
+      'education': 'BS Software Engineering, UST',
+      'skills': ['Java', 'Kotlin', 'Android Development'],
+      'experience': '4 years as an Android Developer'
+    },
+    {
+      'image': 'images/4.jpg',
+      'name': 'Rafael Lorenzo',
+      'email': 'rafael.lorenzo@email.com',
+      'phone': '+63 922 556 7788',
+      'education': 'BS Computer Science, De La Salle University',
+      'skills': ['Python', 'Machine Learning', 'Data Science'],
+      'experience': '5 years as a Data Scientist'
+    },
+    {
+      'image': 'images/5.jpg',
+      'name': 'Jay Ingal',
+      'email': 'jay.ingal@email.com',
+      'phone': '+63 933 667 8899',
+      'education': 'BS Information Systems, FEU',
+      'skills': ['Cybersecurity', 'Network Administration', 'Cloud Computing'],
+      'experience': '3 years as a Cybersecurity Analyst'
+    },
+  ];
 
-@override
-State<MyApp> createState() => _MyAppState();
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text('Resume List'),
+      ),
+      child: SafeArea(
+        child: ListView.builder(
+          itemCount: profiles.length,
+          itemBuilder: (context, index) {
+            return CupertinoListTile(
+              leading: ClipOval(
+                child: Image.asset(
+                  profiles[index]['image'],
+                  height: 50,
+                  width: 50,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              title: Text(profiles[index]['name']),
+              subtitle: Text(profiles[index]['email']),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => ResumeScreen(profile: profiles[index]),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
-int _profileIndex = 0;
-final List<Map<String, String>> _profiles = [
-{'image': 'images/2.jpg', 'name': 'Angilyn Borja', 'lastMessage': 'Hey, how are you?'},
-{'image': 'images/1.jpg', 'name': 'Darren Simbulan', 'lastMessage': 'Let\'s catch up soon!'},
-{'image': 'images/jay.jpg', 'name': 'jay ingal', 'lastMessage': 'Hey, how are you?'},
-{'image': 'images/rafpost.jpg', 'name': 'rafael lorenzo', 'lastMessage': 'Let\'s catch up soon!'},
-// Add more profiles and messages if needed
-];
+class ResumeScreen extends StatelessWidget {
+  final Map<String, dynamic> profile;
 
-@override
-Widget build(BuildContext context) {
-return CupertinoPageScaffold(
-navigationBar: CupertinoNavigationBar(
-middle: Text('Messenger'),
-trailing: CupertinoButton(
-child: Icon(CupertinoIcons.profile_circled),
-onPressed: () {
-showCupertinoDialog(
-context: context,
-builder: (context) {
-int tempIndex = _profileIndex;
-return StatefulBuilder(
-builder: (context, setDialogState) {
-return CupertinoAlertDialog(
-title: Text('List of Members'),
-content: Column(
-children: [
-ClipOval(
-child: Image.asset(
-_profiles[tempIndex]['image']!,
-height: 50,
-),
-),
-SizedBox(height: 10),
-Text(_profiles[tempIndex]['name']!),
-],
-),
-actions: [
-CupertinoButton(
-child: Text(
-'Next',
-style: TextStyle(color: CupertinoColors.activeBlue),
-),
-onPressed: () {
-setDialogState(() {
-tempIndex = (tempIndex + 1) % _profiles.length;
-});
-},
-),
-CupertinoButton(
-child: Text(
-'Close',
-style: TextStyle(color: CupertinoColors.destructiveRed),
-),
-onPressed: () {
-setState(() {
-_profileIndex = tempIndex;
-});
-Navigator.pop(context);
-},
-),
-],
-);
-},
-);
-},
-);
-},
-),
-leading: Icon(CupertinoIcons.chevron_back),
-),
-child: SafeArea(
-child: Padding(
-padding: const EdgeInsets.all(20.0),
-child: Column(
-children: [
-// Displaying List of Profiles and Conversation Previews
-Expanded(
-child: ListView.builder(
-itemCount: _profiles.length,
-itemBuilder: (context, index) {
-return CupertinoListTile(
-leading: ClipOval(
-child: Image.asset(
-_profiles[index]['image']!,
-height: 50,
-width: 50,
-),
-),
-title: Text(_profiles[index]['name']!),
-subtitle: Text(_profiles[index]['lastMessage']!),
-trailing: Icon(CupertinoIcons.bubble_left),
-onTap: () {
-// Navigate to the conversation screen when a profile is tapped
-Navigator.push(
-context,
-CupertinoPageRoute(
-builder: (context) => ConversationScreen(
-profile: _profiles[index],
-),
-),
-);
-},
-);
-},
-),
-),
-],
-),
-),
-),
-);
-}
-}
+  const ResumeScreen({super.key, required this.profile});
 
-class ConversationScreen extends StatefulWidget {
-final Map<String, String> profile;
-
-const ConversationScreen({super.key, required this.profile});
-
-@override
-_ConversationScreenState createState() => _ConversationScreenState();
-}
-
-class _ConversationScreenState extends State<ConversationScreen> {
-List<String> messages = [
-'Hey, how are you?',
-'Let\'s catch up soon!',
-]; // Initial messages in the conversation
-
-TextEditingController _messageController = TextEditingController();
-
-void _sendMessage() {
-if (_messageController.text.isNotEmpty) {
-setState(() {
-messages.add(_messageController.text); // Add new message to the list
-});
-_messageController.clear();
-}
-}
-
-@override
-Widget build(BuildContext context) {
-return CupertinoPageScaffold(
-navigationBar: CupertinoNavigationBar(
-leading: CupertinoButton(
-padding: EdgeInsets.zero,
-child: Icon(CupertinoIcons.chevron_back),
-onPressed: () {
-Navigator.pop(context);
-},
-),
-middle: Text('Chat with ${widget.profile['name']}'),
-),
-child: SafeArea(
-child: Padding(
-padding: const EdgeInsets.all(20.0),
-child: Column(
-children: [
-
-ClipOval(
-child: Image.asset(
-widget.profile['image']!,
-height: 150,
-width: 150,
-),
-),
-SizedBox(height: 10),
-Text(
-widget.profile['name']!,
-style: TextStyle(
-fontSize: 24,
-fontWeight: FontWeight.bold,
-),
-),
-SizedBox(height: 20),
-// Simulated conversation area
-Expanded(
-child: ListView.builder(
-itemCount: messages.length,
-itemBuilder: (context, index) {
-return CupertinoListTile(
-title: Text(messages[index]),
-subtitle: Text('12:30 PM'),
-);
-},
-),
-),
-// Input field for new message
-CupertinoTextField(
-controller: _messageController,
-placeholder: 'Type a message...',
-padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-suffix: CupertinoButton(
-child: Icon(CupertinoIcons.arrow_up_circle_fill),
-onPressed: _sendMessage,
-),
-),
-],
-),
-),
-),
-);
-}
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Text(profile['name']),
+        leading: CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: Icon(CupertinoIcons.back),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: ClipOval(
+                  child: Image.asset(
+                    profile['image'],
+                    height: 100,
+                    width: 100,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              Center(
+                child: Text(
+                  profile['name'],
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(height: 20),
+              Text('📧 Email: ${profile['email']}'),
+              Text('📞 Phone: ${profile['phone']}'),
+              SizedBox(height: 10),
+              Text('🎓 Education: ${profile['education']}'),
+              SizedBox(height: 10),
+              Text('💼 Work Experience: ${profile['experience']}'),
+              SizedBox(height: 10),
+              Text('🛠 Skills:'),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: profile['skills'].map<Widget>((skill) => Text('- $skill')).toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
